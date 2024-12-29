@@ -39,7 +39,8 @@ export function run(args: string[]) {
   files.map((filePath) => {
     const start = Date.now();
     try {
-      changes = changes || formatFile(filePath, context.check);
+      const fileChanged = formatFile(filePath, context.check);
+      changes = changes || fileChanged;
       const end = Date.now();
       const measured = end - start;
       LogUtils.log(LoggerVerboseOption.Normal, `${filePath} - ${measured}ms`);
