@@ -24,6 +24,10 @@ By default if sortier runs into a file it doesn't have a parser for, the program
 1.  Return an exit code of 1 With this flag enabled: 1. The message no longer is printed
 1.  Return an exit code of 0 if no other errors occur
 
+#### `--check`
+
+Check if any files have changed without making changes. Returns 0 if no changes are needed, 1 if changes are needed, or 2 if there is an error.
+
 ## API
 
 Sortier also has an API you can run via code:
