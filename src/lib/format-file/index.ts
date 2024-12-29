@@ -8,7 +8,11 @@ import { FileUtils } from "../../utilities/file-utils.js";
 import { LogUtils, LoggerVerboseOption } from "../../utilities/log-utils.js";
 import { isIgnored } from "../is-ignored/index.js";
 
-export function formatFile(filename: string, options: SortierOptions = resolveOptions(filename)) {
+export function formatFile(
+  filename: string,
+  check: boolean = false,
+  options: SortierOptions = resolveOptions(filename),
+) {
   const language = getReprinterForFile(filename);
   if (language == null) {
     throw new UnsupportedExtensionError(filename);
@@ -22,7 +26,7 @@ export function formatFile(filename: string, options: SortierOptions = resolveOp
   const originalFileContents = FileUtils.readFileContents(filename);
   const newFileContents = language.getRewrittenContents(filename, originalFileContents, options);
 
-  if (options.isTestRun == null || !options.isTestRun) {
+  if (!check && (options.isTestRun == null || !options.isTestRun)) {
     try {
       FileUtils.writeFileContents(filename, newFileContents);
     } catch (writeError) {
@@ -30,6 +34,8 @@ export function formatFile(filename: string, options: SortierOptions = resolveOp
       throw writeError;
     }
   }
+
+  return originalFileContents !== newFileContents;
 }
 
 function isIgnoredFile(filename: string) {

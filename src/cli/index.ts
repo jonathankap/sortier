@@ -15,7 +15,7 @@ export function run(args: string[]) {
       LoggerVerboseOption.Normal,
       "Must provide a file pattern to run sortier over (e.g. `sortier --ignore-unknown './**/*.ts'`)",
     );
-    return 1;
+    return context.check ? 2 : 1;
   }
 
   const files = getFiles(context);
@@ -31,14 +31,15 @@ export function run(args: string[]) {
         `No filepaths found for file pattern(s) ${context.filepatterns.map((value) => `"${value}"`).join(" ")}`,
       );
     }
-    return 1;
+    return context.check ? 2 : 1;
   }
 
   let error = null;
+  let changes = false;
   files.map((filePath) => {
     const start = Date.now();
     try {
-      formatFile(filePath);
+      changes = changes || formatFile(filePath, context.check);
       const end = Date.now();
       const measured = end - start;
       LogUtils.log(LoggerVerboseOption.Normal, `${filePath} - ${measured}ms`);
@@ -62,6 +63,10 @@ export function run(args: string[]) {
   });
 
   if (error != null) {
+    return context.check ? 2 : 1;
+  }
+
+  if (context.check && changes) {
     return 1;
   }
 

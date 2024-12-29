@@ -13,6 +13,7 @@ it.each<{
   const matchedFiles = getFiles({
     filepatterns: args,
     ignoreUnknown: false,
+    check: false,
   });
 
   expect(matchedFiles).toEqual(expectedFiles);
